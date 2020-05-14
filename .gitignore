@@ -4,6 +4,20 @@
 *.pyc
 *.swp
 .DS_Store
+*.perspectivev3
+!default.perspectivev3
+
+	xcuserdata/
+Pods/
+## Other
+*.moved-aside
+*.xcuserstate
+*.xcworkspace/
+*.xcbkptlist
+*.xcfilelist
+
+*.xcscmblueprint
+*.xccheckout
 .atom/
 .buildlog/
 .history
