@@ -24,6 +24,18 @@ SignatureController _scontroller =
 SignatureController(penStrokeWidth: 5, penColor: Colors.green);
 var width = 300;
 var height = 300;
+var newIndex =0;
+var imageIndex = 0;
+String tempImgName;
+bool isLoading = false;
+ List images = [
+  "https://thumbs.dreamstime.com/b/two-birds-perched-twig-orange-cheeked-waxbill-34508046.jpg",
+  "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
+  "https://www.petsworld.in/blog/wp-content/uploads/2014/09/cute-kittens.jpg",
+   "https://media.gettyimages.com/photos/idyllic-home-with-covered-porch-picture-id479767332?s=612x612"
+];
+
+
 
 class PainterClass extends StatefulWidget{
   @override
@@ -32,102 +44,35 @@ class PainterClass extends StatefulWidget{
 
 class _PainterClassState extends State<PainterClass> {
   bool _finished;
-  PainterController _controller;
+  PainterController controller;
   List type = [];
   List multiwidget = [];
   List<Offset> offsets = [];
   final scaf = GlobalKey<ScaffoldState>();
   List<Offset> _points = <Offset>[];
-  var imageIndex = 0;
+
   bool needNewPainter = true;
   bool hasInitializedSwiper = false;
-  final List<String> images = [
-    "https://thumbs.dreamstime.com/b/two-birds-perched-twig-orange-cheeked-waxbill-34508046.jpg",
-    "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-    "https://www.petsworld.in/blog/wp-content/uploads/2014/09/cute-kittens.jpg"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _finished = false;
-    multiwidget.clear();
-    _controller = newController();
-  }
-
-  PainterController newController() {
-
-    PainterController controller = PainterController();
-    controller.thickness = 5.0;
-    controller.backgroundColor = Colors.green;
-    controller.backgroundImage = Image.network(
-        images[imageIndex]
-    );
-        //'https://thumbs.dreamstime.com/b/two-birds-perched-twig-orange-cheeked-waxbill-34508046.jpg');
-    return controller;
-  }
-
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    print(directory.path);
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/counter.txt');
-  }
-
-  Future<Uint8List> readContent() async {
-    //try {
-      final file = await _localFile;
-      // Read the file
-      Uint8List bytes;
-      await file.readAsBytes().then((value) {
-        bytes = Uint8List.fromList(value);
-      }).catchError((onError) {
-        onError.toString();
-      });
-     // ByteData contents = await file.readAsBytes()
-      // Returning the contents of the file
-
-      return bytes;
-    }
-
-
 
 //Test
   GlobalKey _globalKey = new GlobalKey();
-  bool inside = false;
-  Uint8List imageInMemory;
+//Uint8List imageInMemory;
   Future<Uint8List> _capturePng() async {
     try {
-      inside = true;
       RenderRepaintBoundary boundary =
       _globalKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 10.0);
       ByteData byteData =
       await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
-     // final directory = (await getExternalStorageDirectory()).path;
       final file = await _localFile;
       file.writeAsBytes(pngBytes);
-
-//      //read img data just tested here. Need to move somewhere else
-//      Uint8List imgByte;
-//      readContent().then((bytesData) {
-//        imgByte = bytesData;
-//      });
-//
 //      // Save img to Gallery
 //      final res = await ImageGallerySaver.saveImage(pngBytes);
 //      //Upto here Save img to gallery
-      print("outside");
-      setState(() {
-        print("inside");
-        imageInMemory = pngBytes;
-        inside = false;
-      });
+//    setState(() {
+//      imageInMemory = pngBytes;
+//    });
       return pngBytes;
     } catch (e) {
       print(e);
@@ -135,6 +80,79 @@ class _PainterClassState extends State<PainterClass> {
     return null;
   }
 //Upto here Test
+
+  Future<Uint8List> readContent() async {
+    //try {
+    final file = await _localFile;
+    // Read the file
+    Uint8List bytes;
+    await file.readAsBytes().then((value) {
+      bytes = Uint8List.fromList(value);
+    }).catchError((onError) {
+      onError.toString();
+    });
+    return bytes;
+  }
+
+  Future deleteImgFile() async {
+    final file = await _localFile;
+    file.delete();
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    String fileName = images[imageIndex];
+    final replaced = fileName.replaceAll("/", "-");
+    return File('$path/$replaced');
+
+  }
+
+
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _finished = false;
+    multiwidget.clear();
+    controller = newController();
+
+  }
+
+  PainterController newController() {
+
+    PainterController controller = PainterController();
+    controller.thickness = 5.0;
+    controller.backgroundColor = Colors.green;
+    readContent().then((imgFile) {
+      if(imgFile != null) {
+        controller.backgroundImage = Image.memory(imgFile,
+        fit: BoxFit.cover,);
+      } else {
+        controller.backgroundImage = Image.network(
+          images[imageIndex],
+          fit: BoxFit.cover,
+        );
+
+      }
+
+    });
+
+    return controller;
+  }
+
+
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +165,7 @@ class _PainterClassState extends State<PainterClass> {
           onPressed: () => setState(() {
             _finished = false;
             multiwidget.clear();
-           _controller = newController();
+           controller = newController();
           }),
         ),
       ];
@@ -158,10 +176,9 @@ class _PainterClassState extends State<PainterClass> {
           tooltip: 'Undo',
           onPressed: () {
 
-            if (_controller.canUndo)
+            if (controller.canUndo)
               {
-                print("Entered");
-                _controller.undo();
+                controller.undo();
               } else {
                if (multiwidget != null) {
                  multiwidget.removeLast();
@@ -178,58 +195,41 @@ class _PainterClassState extends State<PainterClass> {
           icon: Icon(Icons.redo),
           tooltip: 'Redo',
           onPressed: () {
-            if (_controller.canRedo) _controller.redo();
+            if (controller.canRedo) controller.redo();
           },
         ),
         IconButton(
           icon: Icon(Icons.delete),
           tooltip: 'Clear',
           onPressed: () => setState(() {
+            deleteImgFile();
             multiwidget.clear();
-            _controller.clear();
+            controller.clear();
           })
         ),
         IconButton(
           icon: Icon(Icons.text_fields),
           onPressed: () async {
-            needNewPainter = false;
-           // Timer(Duration(seconds: 3), () {
-//              _capturePng().then((imgValue) {
-//                print("capture");
-//                if(imgValue != null) {
-//                  print("capture3");
-//                }
-//                if(imageInMemory != null){
-//                  print("capture2");
-//                  _controller.backgroundImage = Image.memory(imageInMemory);
-//                }
-//              });
-            //});
             final value = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => TextEditor()));
             if ((value.toString().isEmpty) || (value == null)) {
-              print("true");
             } else {
-              print("else");
               type.add(2);
               fontsize.add(20);
               offsets.add(Offset.zero);
               multiwidget.add(value);
-              _controller.backgroundImage = Image.memory(imageInMemory);
-//              Timer(Duration(seconds: 3), () {
-//                _capturePng().then((imgValue) {
-//                  print("capture");
-//                  if(imgValue != null) {
-//                    print("capture3");
-//                  }
-//                  if(imageInMemory != null){
-//                    print("capture2");
-//                    _controller.backgroundImage = Image.memory(imageInMemory);
-//                  }
-//                });
-//              });
+              setState(() {
+                isLoading = true;
+              });
+              Timer(Duration(seconds: 2), () {
+                _capturePng().then((value) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                });
+              });
             }
           },tooltip: "Text",
         ),
@@ -239,6 +239,7 @@ class _PainterClassState extends State<PainterClass> {
               setState(() {
                 _finished = true;
               });
+            //Timer(Duration(seconds: 3), () {
               _capturePng().then((imgData) {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -251,8 +252,8 @@ class _PainterClassState extends State<PainterClass> {
                           child: new Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              imageInMemory != null ? Container(
-                                child: Image.memory(imageInMemory),
+                              imgData != null ? Container(
+                                child: Image.memory(imgData),
                                 margin: EdgeInsets.all(10),
                               ) : Container(),
                             ],
@@ -262,6 +263,8 @@ class _PainterClassState extends State<PainterClass> {
                   );
                 }));
               });
+            //});
+
 
 
 
@@ -273,7 +276,7 @@ class _PainterClassState extends State<PainterClass> {
           title: Text('Painter2 Example'),
           actions: actions,
           bottom: PreferredSize(
-            child: DrawBar(_controller),
+            child: DrawBar(controller),
             preferredSize: Size(MediaQuery.of(context).size.width, 30.0),
           )),
         body: RepaintBoundary(
@@ -281,11 +284,21 @@ class _PainterClassState extends State<PainterClass> {
           child: Stack(
             children: <Widget>[
               Container(
-                //child: Center(
-                  child: getSwiper(),
-                   // child: AspectRatio(aspectRatio: 1.0, child: Painter(_controller))
-                //),
+                child: Center(
+                  //child: getSwiper(),
+                    child: AspectRatio(aspectRatio: 1.0, child: Painter(controller))
+                ),
               ),
+              Center(
+                child: (Container(
+                  width: 24,
+                  height: 24,
+                  child: (isLoading ? CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ) : Container()),
+                  )),
+                ),
+
               Stack(
                 children: multiwidget.asMap().entries.map((f) {
                   return type[f.key] == 1
@@ -295,15 +308,14 @@ class _PainterClassState extends State<PainterClass> {
                     left: offsets[f.key].dx,
                     top: offsets[f.key].dy,
                     ontap: () {
-                      print("vvvidya");
-//                      scaf.currentState
-//                          .showBottomSheet((context) {
-//                        return Sliders(
-//                          size: f.key,
-//                          sizevalue:
-//                          fontsize[f.key].toDouble(),
-//                        );
-//                      });
+                      scaf.currentState
+                          .showBottomSheet((context) {
+                        return Sliders(
+                          size: f.key,
+                          sizevalue:
+                          fontsize[f.key].toDouble(),
+                        );
+                      });
                     },
                     onpanupdate: (details) {
                       setState(() {
@@ -335,9 +347,6 @@ class _PainterClassState extends State<PainterClass> {
 //        itemCount: images.length,
 //        itemBuilder: (context, index){
 //          //if(needNewPainter == true) {
-//            print(index);
-//            print(imageIndex);
-//            print("list");
 //            imageIndex = index;
 //            PainterController con = new PainterController();
 //            con.thickness = 5.0;
@@ -367,43 +376,17 @@ class _PainterClassState extends State<PainterClass> {
 //
 //      ),
         child: Swiper(
-          layout: SwiperLayout.TINDER,
-          itemWidth: (MediaQuery.of(context).size.width),
           itemBuilder: (BuildContext context, int index) {
-//            return Stack(
-//
-//            );
-           // if( imageIndex != index) {
-              print("Got");
+            if( imageIndex != index) {
               imageIndex = index;
-            //  if(hasInitializedSwiper == false) {
-                print(index);
-                print(images.length - 1);
-//                if(index == images.length - 1) {
-//                  print("vidya");
-//
-//                  hasInitializedSwiper = true;
-//                }
-                PainterController conn = new PainterController();
-                _controller = conn;
-                conn.backgroundImage = Image.network(
-                  images[index],
-                  fit: BoxFit.contain,
-                );
-//              return Center(
-//                child: AspectRatio(aspectRatio: 1.0,
-//                child: Painter(conn),),
-//
-//              );
-                return new AspectRatio(aspectRatio: 1.0,
-                  child: Painter(conn),
-                );
-             // }
-
-           // }
-//            return new AspectRatio(aspectRatio: 1.0,
-//              child: Painter(_controller),
-//            );
+              PainterController cont = newController();
+              return new AspectRatio(aspectRatio: 1.0,
+                child: Painter(cont),
+              );
+            }
+            return new AspectRatio(aspectRatio: 1.0,
+              child: Painter(controller),
+            );
           },
 
           autoplay: false,
@@ -420,9 +403,9 @@ class _PainterClassState extends State<PainterClass> {
 
 
 class DrawBar extends StatelessWidget {
-  final PainterController _controller;
+  final PainterController controller;
 
-  DrawBar(this._controller);
+  DrawBar(this.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -433,27 +416,27 @@ class DrawBar extends StatelessWidget {
             builder: (BuildContext context, StateSetter setState) {
               return Container(
                   child: Slider(
-                    value: _controller.thickness,
+                    value: controller.thickness,
                     onChanged: (value) => setState(() {
-                      _controller.thickness = value;
+                      controller.thickness = value;
                     }),
                     min: 1.0,
                     max: 20.0,
                     activeColor: Colors.white,
                   ));
             })),
-        ColorPickerButton(_controller, false),
-        ColorPickerButton(_controller, true),
+        ColorPickerButton(controller, false),
+        ColorPickerButton(controller, true),
       ],
     );
   }
 }
 
 class ColorPickerButton extends StatefulWidget {
-  final PainterController _controller;
+  final PainterController controller;
   final bool _background;
 
-  ColorPickerButton(this._controller, this._background);
+  ColorPickerButton(this.controller, this._background);
 
   @override
   _ColorPickerButtonState createState() => new _ColorPickerButtonState();
@@ -495,18 +478,17 @@ class _ColorPickerButtonState extends State<ColorPickerButton> {
   }
 
   Color get _color => widget._background
-      ? widget._controller.backgroundColor
-      : widget._controller.drawColor;
+      ? widget.controller.backgroundColor
+      : widget.controller.drawColor;
 
   IconData get _iconData =>
       widget._background ? Icons.format_color_fill : Icons.brush;
 
   set _color(Color color) {
-    print("color");
     if (widget._background) {
-      widget._controller.backgroundColor = color;
+      widget.controller.backgroundColor = color;
     } else {
-      widget._controller.drawColor = color;
+      widget.controller.drawColor = color;
     }
   }
 }
@@ -552,7 +534,6 @@ class _SlidersState extends State<Sliders> {
                 onChanged: (v) {
                   setState(() {
                     slider = v;
-                    print(v.toInt());
                     fontsize[widget.size] = v.toInt();
                   });
                 }),
@@ -560,4 +541,31 @@ class _SlidersState extends State<Sliders> {
         ));
   }
 }
+
+class PainterSwiperClass extends StatefulWidget{
+  @override
+  _PainterSwiperState createState() => _PainterSwiperState();
+}
+
+class _PainterSwiperState extends State<PainterSwiperClass> {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      body: Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          imageIndex = index;
+         // PainterClass().method();
+
+          //Timer(Duration(seconds: 3), () {
+            return PainterClass();
+         // });
+        },
+          itemCount: images.length
+        ),
+    );
+  }
+}
+
+
 
