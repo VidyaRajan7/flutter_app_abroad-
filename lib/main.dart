@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappabroad/ImageEditorProClass/ImageEditorProClass.dart';
+import 'package:flutterappabroad/LiberateHealthApp/Login.dart';
 import 'package:flutterappabroad/MultipleScreens/SimpleListAndDetail/SimpleListAndDetail.dart';
 import 'package:flutterappabroad/PainterClass/PainterClass.dart';
 import 'package:flutterappabroad/PainterClass/PainterClassTemp.dart';
@@ -11,11 +12,13 @@ import 'package:flutterappabroad/Swiper/SwiperClass.dart';
 import 'package:flutterappabroad/TextSwiper/TextSwiper.dart';
 import 'Home/Home.dart';
 import 'dart:convert';
-
+import 'package:flutter/services.dart';
 
 const bool debugEnableDeviceSimulator = true;
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   var selectedCount = 0;
@@ -24,10 +27,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      color: Colors.red,
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.grey,
       ),
-      home: MasterDetailPage()
+      home: LoginPage()
     );
   }
 }
