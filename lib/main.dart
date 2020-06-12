@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappabroad/FlutterToNative/FlutterToNativeHome.dart';
 import 'package:flutterappabroad/ImageEditorProClass/ImageEditorProClass.dart';
 import 'package:flutterappabroad/LiberateHealthApp/Login.dart';
 import 'package:flutterappabroad/MultipleScreens/SimpleListAndDetail/SimpleListAndDetail.dart';
@@ -17,7 +18,14 @@ import 'package:flutter/services.dart';
 const bool debugEnableDeviceSimulator = true;
 
 void main() {
-  runApp(MyApp());
+  // commented lines for setting device orientation
+  //WidgetsFlutterBinding.ensureInitialized();
+
+ // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]).then((_) {
+    runApp(MyApp());
+
+ // });
+
 }
 
 class MyApp extends StatelessWidget {
@@ -25,13 +33,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       color: Colors.red,
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: LoginPage()
+      home: FlutterToNativeHome()
     );
   }
 }

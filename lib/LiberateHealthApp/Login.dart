@@ -11,7 +11,6 @@ class MainPage extends StatefulWidget{
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
     // TODO: implement build
     return null;
