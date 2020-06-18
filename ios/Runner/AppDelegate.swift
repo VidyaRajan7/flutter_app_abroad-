@@ -28,22 +28,25 @@ import ReplayKit
                 let strNative = weakSelf?.helloFromNativeCode()
                 result(strNative)
             } else if ("screenRecordingFromNative" == call.method) {
-                /* this is for ASScreenRecorder
-                let recorder = ASScreenRecorder.sharedInstance()
+                // this is for ASScreenRecorder
+              /*  let recorder = ASScreenRecorder.sharedInstance()
                 if(recorder?.isRecording ?? false) {
-                    recorder?.stopRecording {
-                        print("Stopped")
-                        recorder?.playEndSound()
-                       result("Stopped")
+//                    recorder?.stopRecording {
+//                        print("Stopped")
+//                        //recorder?.playEndSound()
+//                       result("Stopped")
+//                    }
+                    recorder?.stopRecording { result in
+                        print("stopped");
                     }
                 } else {
                     recorder?.startRecording()
                     print("Recording...")
-                    recorder?.playStartSound()
+                    //recorder?.playStartSound()
                     result("Recording...")
                 }
                 */
-                /* for replaykit
+                // for replaykit
                 if (weakSelf?.isRecording == false) {
                     weakSelf?.startRecording(messageString: {
                         message in
@@ -55,8 +58,8 @@ import ReplayKit
                         message in
                         result(message)
                     })
-                } // upto here Replaykit*/
-                let randomNumber = arc4random_uniform(9999);
+                } // upto here Replaykit
+               /* let randomNumber = arc4random_uniform(9999);
                 let  fileName = "coolScreenRecording\(randomNumber)"
                 if (weakSelf?.isRecording == false) {
                     weakSelf?.startRecording(withFileName: fileName) { (error) in
@@ -70,7 +73,7 @@ import ReplayKit
                         print("Recording Stopped")
                         result(error)
                     }
-                }
+                } */
             } else if ("muteOrUnMuteFromNative" == call.method){
                 if(self.isMute) {
                     self.recorder.isMicrophoneEnabled = true
@@ -97,8 +100,8 @@ import ReplayKit
     
     
     
-    func startRecording1(messageString: @escaping(_ message: String)->()) -> Void {
-               
+    func startRecording(messageString: @escaping(_ message: String)->()) -> Void {
+    
         guard recorder.isAvailable else {
             print("Recording is not available at this time.")
             return
@@ -120,11 +123,12 @@ import ReplayKit
     }
     
     
-    func stopRecording1(messageString: @escaping(_ messsage: String)->()) ->Void {
+    func stopRecording(messageString: @escaping(_ messsage: String)->()) ->Void {
         recorder.stopRecording { [unowned self] (preview, error) in
            print("Stopped recording")
-           
-           guard preview != nil else {
+            //let vc = self.getCurrentViewController()
+
+           guard let previewView = preview else {
                print("Preview controller is not available.")
                return
            }
@@ -139,8 +143,10 @@ import ReplayKit
             
            let editAction = UIAlertAction(title: "Edit", style: .default, handler: { (action: UIAlertAction) -> Void in
             // crash is happened here ( When edit button clicked)
-                preview?.previewControllerDelegate = self
-                self.window.rootViewController?.present(preview ?? RPPreviewViewController(), animated: true, completion: nil)
+            previewView.previewControllerDelegate = self
+            //previewView.popoverPresentationController?.sourceView = vc?.view
+           // vc?.present(previewView, animated: true, completion: nil)
+            self.window.rootViewController?.present(previewView, animated: true, completion: nil)
            })
 
            alert.addAction(editAction)
@@ -153,7 +159,7 @@ import ReplayKit
     //New method
     
     //MARK: Screen Recording
-        func startRecording(withFileName fileName: String, recordingHandler:@escaping (String?)-> Void)
+        func startRecording1(withFileName fileName: String, recordingHandler:@escaping (String?)-> Void)
         {
             if #available(iOS 11.0, *)
             {
@@ -208,7 +214,7 @@ import ReplayKit
             }
         }
         
-        func stopRecording(handler: @escaping (String?) -> Void)
+        func stopRecording2(handler: @escaping (String?) -> Void)
         {
             if #available(iOS 11.0, *)
             {
@@ -227,6 +233,30 @@ import ReplayKit
             }
         }
     
-    
+    func getCurrentViewController() -> UIViewController? {
+
+        // If the root view is a navigation controller, we can just return the visible ViewController
+//        if let navigationController = getNavigationController() {
+//
+//            return navigationController.visibleViewController
+//        }
+
+        // Otherwise, we must get the root UIViewController and iterate through presented views
+        if let rootController = UIApplication.shared.keyWindow?.rootViewController {
+
+            var currentController: UIViewController! = rootController
+
+            // Each ViewController keeps track of the view it has presented, so we
+            // can move from the head to the tail, which will always be the current view
+            while( currentController.presentedViewController != nil ) {
+
+                currentController = currentController.presentedViewController
+            }
+            return currentController
+        }
+        return nil
+    }
     
 }
+
+
