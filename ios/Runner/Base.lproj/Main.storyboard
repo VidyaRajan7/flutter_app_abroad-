@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Flutter View Controller-->
@@ -14,13 +16,102 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="45" y="31"/>
+        </scene>
+        <!--Screen Recorder View Controller-->
+        <scene sceneID="NrT-Uv-JMp">
+            <objects>
+                <viewController storyboardIdentifier="ScreenRecorderViewController" id="9oA-VX-8kX" customClass="ScreenRecorderViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3uq-7B-H2m"/>
+                        <viewControllerLayoutGuide type="bottom" id="jXF-ew-iwW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="APT-9m-6qa">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="npu-q5-E7f">
+                                <rect key="frame" x="184" y="135.5" width="35" height="34"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="QG8-O9-RWJ"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="play.circle" catalog="system"/>
+                                <connections>
+                                    <action selector="playPauseAction:" destination="9oA-VX-8kX" eventType="touchUpInside" id="RRe-Lm-XSB"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OLQ-tD-abY">
+                                <rect key="frame" x="189.5" y="244.5" width="35" height="35"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="3VF-iL-ApL"/>
+                                    <constraint firstAttribute="height" constant="36" id="Oou-Qu-CaV"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="mic.circle.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="micAction:" destination="9oA-VX-8kX" eventType="touchUpInside" id="e66-JE-hu3"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="npu-q5-E7f" secondAttribute="trailing" constant="175" id="7H5-OD-FJf"/>
+                            <constraint firstItem="npu-q5-E7f" firstAttribute="leading" secondItem="APT-9m-6qa" secondAttribute="leadingMargin" constant="164" id="h8J-Qj-VXW"/>
+                            <constraint firstItem="npu-q5-E7f" firstAttribute="top" secondItem="3uq-7B-H2m" secondAttribute="bottom" constant="91" id="m6F-S0-GO0"/>
+                            <constraint firstItem="OLQ-tD-abY" firstAttribute="top" secondItem="npu-q5-E7f" secondAttribute="bottom" constant="74" id="oRH-XZ-xk9"/>
+                            <constraint firstItem="OLQ-tD-abY" firstAttribute="centerX" secondItem="APT-9m-6qa" secondAttribute="centerX" id="omL-JM-TQ6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="micBtn" destination="OLQ-tD-abY" id="oWI-7b-Lqa"/>
+                        <outlet property="playPauseBtn" destination="npu-q5-E7f" id="ekY-tx-Rj6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yGt-Nt-nxV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="786.95652173913049" y="30.803571428571427"/>
+        </scene>
+        <!--Second View Controller-->
+        <scene sceneID="8X0-DS-EVA">
+            <objects>
+                <viewController storyboardIdentifier="SecondViewController" id="Xjm-DN-BNP" customClass="SecondViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="KZC-BQ-Dwm"/>
+                        <viewControllerLayoutGuide type="bottom" id="tYN-3t-USa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2Qx-HF-aqd">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DAU-7S-bS5">
+                                <rect key="frame" x="156.5" y="433" width="101" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="DAU-7S-bS5" firstAttribute="centerX" secondItem="2Qx-HF-aqd" secondAttribute="centerX" id="1Zt-9L-ro8"/>
+                            <constraint firstItem="DAU-7S-bS5" firstAttribute="centerY" secondItem="2Qx-HF-aqd" secondAttribute="centerY" id="c8I-Gm-ezB"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="U17-wt-v5b" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1514" y="31"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="mic.circle.fill" catalog="system" width="64" height="60"/>
+        <image name="play.circle" catalog="system" width="64" height="60"/>
+    </resources>
 </document>
